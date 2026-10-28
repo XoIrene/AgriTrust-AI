@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ t('app.name', lang) }}{% endblock %}
+{% block body %}
+<div class="photo-bg">
+  <main class="splash-main">
+    <img class="logo-hero splash-rise" src="{{ asset('images/logo.svg') }}" alt="{{ t('app.name', lang) }}" width="96" height="96">
+    <p class="splash-eyebrow splash-rise">{{ t('app.subtitle', lang) }}</p>
+
+    <h1 class="splash-title splash-rise">{{ t('app.tagline', lang) }}</h1>
+
+    <p class="splash-lead splash-rise">{{ t('splash.purpose', lang) }}</p>
+
+    <div class="splash-actions splash-rise">
+      <a class="btn" href="/register">{{ t('splash.get_started', lang) }} <span aria-hidden="true">&rarr;</span></a>
+      <a class="btn secondary" href="/login">{{ t('nav.login', lang) }}</a>
+    </div>
+
+    <div class="splash-grid splash-rise">
+      <article class="splash-card">
+        <span class="splash-icon" aria-hidden="true">🌱</span>
+        <div>
+          <h3>{{ t('splash.farmers', lang) }}</h3>
+          <p>{{ t('splash.farmers_desc', lang) }}</p>
+        </div>
+      </article>
+      <article class="splash-card">
+        <span class="splash-icon" aria-hidden="true">🛒</span>
+        <div>
+          <h3>{{ t('splash.buyers', lang) }}</h3>
+          <p>{{ t('splash.buyers_desc', lang) }}</p>
+        </div>
+      </article>
+      <article class="splash-card">
+        <span class="splash-icon" aria-hidden="true">🛡️</span>
+        <div>
+          <h3>{{ t('splash.insurance', lang) }}</h3>
+          <p>{{ t('splash.insurance_desc', lang) }}</p>
+        </div>
+      </article>
+      <article class="splash-card">
+        <span class="splash-icon" aria-hidden="true">🏦</span>
+        <div>
+          <h3>{{ t('splash.institutions', lang) }}</h3>
+          <p>{{ t('splash.institutions_desc', lang) }}</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="small splash-note splash-rise">
+      {{ t('ussd.note', lang) }}
+      <a href="/home">{{ t('splash.more', lang) }} <span aria-hidden="true">&rarr;</span></a>
+    </p>
+  </main>
+
+  <div class="splash-foot" id="splash-foot" hidden>
+    <span id="splash-continuing">{{ t('splash.continuing', lang) }}</span>
+    <span class="splash-track" role="presentation"><span class="splash-fill" id="splash-fill"></span></span>
+    <button type="button" class="splash-skip" id="splash-skip">{{ t('splash.skip', lang) }}</button>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ asset('js/splash.js') }}"></script>
+{% endblock %}

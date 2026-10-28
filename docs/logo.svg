@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AgriTrust AI">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4caf50"/><stop offset="1" stop-color="#1b5e20"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 3 55 11v19c0 15-9.5 26-23 31C18.500 56 9 45 9 30V11z" fill="url(#g)"/>
+  <path d="M32 50V27" stroke="#fff" stroke-width="3.200" stroke-linecap="round" fill="none"/>
+  <path d="M32 33c-9 0-14-5-14-13 9 0 14 5 14 13z" fill="#fff"/>
+  <path d="M32 27c0-8 5-13 14-13 0 8-5 13-14 13z" fill="#e0a72e"/>
+  <path d="M25 41l5 5 10-11" stroke="#1b5e20" stroke-width="0" fill="none"/>
+</svg>

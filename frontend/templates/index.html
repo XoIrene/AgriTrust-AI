@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block body %}
+<main class="container">
+  <section class="hero">
+    <div>
+      <h1>{{ t('app.tagline', lang) }}</h1>
+      <p class="lead">{{ t('app.subtitle', lang) }}</p>
+      <div class="row" style="margin-top:1.25rem">
+        <a class="btn" href="/register">{{ t('auth.register', lang) }}</a>
+        <a class="btn secondary" href="/login">{{ t('nav.login', lang) }}</a>
+      </div>
+    </div>
+    <div>
+      <div class="phone" aria-label="{{ t('ussd.title', lang) }}">*XYZ#
+
+{{ t('ussd.welcome', lang) }}
+{{ t('ussd.choose_option', lang) }}
+1. {{ t('ussd.menu.farm', lang) }}
+2. {{ t('ussd.menu.apply', lang) }}
+3. {{ t('ussd.menu.loan_status', lang) }}
+4. {{ t('ussd.menu.market', lang) }}
+5. {{ t('ussd.menu.weather', lang) }}
+6. {{ t('ussd.menu.insurance', lang) }}</div>
+      <p class="small muted" style="margin-top:0.5rem">{{ t('ussd.note', lang) }}</p>
+    </div>
+  </section>
+
+  <section class="grid grid-3">
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">🌱</span>{{ t('farm.title', lang) }}</h3>
+      <p class="muted">{{ t('farm.crops', lang) }} · {{ t('farm.activities', lang) }} · {{ t('crop.production_cost', lang) }}</p>
+    </article>
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">💳</span>{{ t('loan.title', lang) }}</h3>
+      <p class="muted">{{ t('risk.explanation', lang) }} {{ t('risk.human_review', lang) }}</p>
+    </article>
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">🌦️</span>{{ t('insurance.title', lang) }}</h3>
+      <p class="muted">{{ t('insurance.drought_desc', lang) }}</p>
+    </article>
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">📈</span>{{ t('market.title', lang) }}</h3>
+      <p class="muted">{{ t('market.trend', lang) }} · {{ t('market.best_market', lang) }}</p>
+    </article>
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">💬</span>{{ t('assistant.title', lang) }}</h3>
+      <p class="muted">{{ t('assistant.disclaimer', lang) }}</p>
+    </article>
+    <article class="card feature">
+      <h3><span class="icon" aria-hidden="true">📱</span>{{ t('ussd.title', lang) }}</h3>
+      <p class="muted">{{ t('ussd.note', lang) }}</p>
+    </article>
+  </section>
+</main>
+<footer class="container small muted">{{ t('footer.built_with', lang) }}</footer>
+{% endblock %}

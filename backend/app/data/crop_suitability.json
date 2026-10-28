@@ -1,0 +1,160 @@
+{
+  "_comment": "Crop requirements for Tanzanian growing conditions. Data only - no business logic. Keys are the canonical crop names used by app.ai.features.CROP_PROFILE, which is the system's own crop list. minimum_rain_mm / ideal_rain_mm are totals for one season, not per day. Extending the system with a new crop means adding it to CROP_PROFILE first, then here.",
+  "version": 1,
+  "season_months": {
+    "MASIKA": [3, 4, 5],
+    "VULI": [10, 11, 12]
+  },
+  "regions": {
+    "_default": {
+      "MASIKA": { "start": "03-01", "end": "05-31" },
+      "VULI": { "start": "10-01", "end": "12-31" },
+      "DRY": [
+        { "start": "06-01", "end": "09-30" },
+        { "start": "01-01", "end": "02-28" }
+      ]
+    },
+    "Morogoro": {
+      "MASIKA": { "start": "03-01", "end": "05-31" },
+      "VULI": { "start": "10-15", "end": "12-31" },
+      "DRY": [
+        { "start": "06-01", "end": "10-14" },
+        { "start": "01-01", "end": "02-28" }
+      ]
+    },
+    "Kilombero": {
+      "MASIKA": { "start": "03-01", "end": "05-31" },
+      "VULI": { "start": "10-01", "end": "12-31" },
+      "DRY": [
+        { "start": "06-01", "end": "09-30" },
+        { "start": "01-01", "end": "02-28" }
+      ]
+    },
+    "Dodoma": {
+      "MASIKA": { "start": "03-01", "end": "05-31" },
+      "VULI": { "start": "10-15", "end": "12-31" },
+      "DRY": [
+        { "start": "06-01", "end": "10-14" },
+        { "start": "01-01", "end": "02-28" }
+      ]
+    },
+    "Arusha": {
+      "MASIKA": { "start": "03-15", "end": "06-15" },
+      "VULI": { "start": "10-01", "end": "12-31" },
+      "DRY": [
+        { "start": "06-16", "end": "09-30" },
+        { "start": "01-01", "end": "03-14" }
+      ]
+    },
+    "Mbeya": {
+      "MASIKA": { "start": "02-15", "end": "05-15" },
+      "VULI": { "start": "10-01", "end": "12-31" },
+      "DRY": [
+        { "start": "05-16", "end": "09-30" },
+        { "start": "01-01", "end": "02-14" }
+      ]
+    }
+  },
+  "crops": {
+    "maize": {
+      "minimum_rain_mm": 500,
+      "ideal_rain_mm": 750,
+      "ideal_temp_min_c": 18,
+      "ideal_temp_max_c": 32,
+      "heat_tolerance_c": 40,
+      "water_sensitive": true,
+      "note": "Needs a reliable supply through tasselling; a dry spell then heavy rain costs more yield than steady rain."
+    },
+    "rice": {
+      "minimum_rain_mm": 800,
+      "ideal_rain_mm": 1200,
+      "ideal_temp_min_c": 22,
+      "ideal_temp_max_c": 33,
+      "heat_tolerance_c": 38,
+      "water_sensitive": true,
+      "note": "Needs standing water or very reliable irrigation, so it is a wet-season crop."
+    },
+    "beans": {
+      "minimum_rain_mm": 300,
+      "ideal_rain_mm": 500,
+      "ideal_temp_min_c": 16,
+      "ideal_temp_max_c": 28,
+      "heat_tolerance_c": 35,
+      "water_sensitive": false,
+      "note": "A short 90-day crop that fits the shoulder months between the two rainy seasons."
+    },
+    "sorghum": {
+      "minimum_rain_mm": 350,
+      "ideal_rain_mm": 550,
+      "ideal_temp_min_c": 20,
+      "ideal_temp_max_c": 36,
+      "heat_tolerance_c": 42,
+      "water_sensitive": false,
+      "note": "Tolerates heat and a dry spell better than maize, which makes it the safer dry-season choice."
+    },
+    "cassava": {
+      "minimum_rain_mm": 400,
+      "ideal_rain_mm": 700,
+      "ideal_temp_min_c": 22,
+      "ideal_temp_max_c": 34,
+      "heat_tolerance_c": 40,
+      "water_sensitive": false,
+      "note": "A long dry-season crop that stores water in the root and is harvested after 8 or 9 months."
+    },
+    "wheat": {
+      "minimum_rain_mm": 350,
+      "ideal_rain_mm": 600,
+      "ideal_temp_min_c": 14,
+      "ideal_temp_max_c": 26,
+      "heat_tolerance_c": 32,
+      "water_sensitive": true,
+      "note": "A cool-season crop; it is planted in the dry season on residual moisture and does not tolerate heat."
+    },
+    "groundnut": {
+      "minimum_rain_mm": 350,
+      "ideal_rain_mm": 600,
+      "ideal_temp_min_c": 20,
+      "ideal_temp_max_c": 33,
+      "heat_tolerance_c": 38,
+      "water_sensitive": false,
+      "note": "A legume that fixes its own nitrogen, so it suits poor soils and a shorter rainfall window."
+    },
+    "cotton": {
+      "minimum_rain_mm": 450,
+      "ideal_rain_mm": 700,
+      "ideal_temp_min_c": 21,
+      "ideal_temp_max_c": 35,
+      "heat_tolerance_c": 40,
+      "water_sensitive": false,
+      "note": "Needs a long frost-free window and a dry finish so the bolls open."
+    },
+    "vegetables": {
+      "minimum_rain_mm": 250,
+      "ideal_rain_mm": 450,
+      "ideal_temp_min_c": 15,
+      "ideal_temp_max_c": 27,
+      "heat_tolerance_c": 33,
+      "water_sensitive": true,
+      "note": "The most irrigation-hungry crop in the list and the most sensitive to heat; best close to water."
+    }
+  },
+  "planting_window": {
+    "_comment": "Rule-based scoring for the best stretch to plant into. A day is penalised for too little rain, too much rain, extreme heat and strong wind; a run of days is scored by its average penalty, and the lowest-scoring run wins. Weights are deliberately simple so the reason can be explained to the farmer.",
+    "horizon_days": 14,
+    "min_run_days": 3,
+    "rain_mm": { "too_dry_below": 1.0, "too_wet_above": 30.0 },
+    "temperature_c": { "extreme_above": 35.0 },
+    "wind_kmh": { "strong_above": 20.0 },
+    "weights": {
+      "too_dry": 3.0,
+      "too_wet": 3.0,
+      "too_hot": 2.0,
+      "too_windy": 1.0
+    }
+  },
+  "history": {
+    "_comment": "Minimum stored data before a season-vs-history percentage is reported at all. Below this the advisory omits the comparison instead of inventing one.",
+    "min_past_seasons": 2,
+    "min_days_in_past_season": 20
+  }
+}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}{{ t('auth.register_title', lang) }}{% endblock %}
+{% block body %}
+<div class="photo-bg">
+  <main class="container">
+    <p class="auth-aside">{{ t('splash.purpose', lang) }}</p>
+    <section class="card auth-card" style="max-width:560px">
+      <img class="logo-card" src="{{ asset('images/logo.svg') }}" alt="{{ t('app.name', lang) }}" width="64" height="64">
+    <h1>{{ t('auth.register_title', lang) }}</h1>
+    <div id="form-error" class="alert error hidden" role="alert"></div>
+    <form id="register-form" novalidate>
+      <div class="field">
+        <label for="full_name">{{ t('auth.full_name', lang) }}</label>
+        <input id="full_name" name="full_name" autocomplete="name" required minlength="2">
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="phone">{{ t('auth.phone', lang) }}</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ t('form.phone_placeholder', lang) }}">
+        </div>
+        <div class="field">
+          <label for="email">{{ t('auth.email', lang) }} <span class="muted">({{ t('common.optional', lang) }})</span></label>
+          <input id="email" name="email" type="email" autocomplete="email">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="password">{{ t('auth.password', lang) }}</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" required minlength="8">
+          <div class="hint">{{ t('auth.password_hint', lang) }}</div>
+        </div>
+        <div class="field">
+          <label for="confirm">{{ t('auth.confirm_password', lang) }}</label>
+          <input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="role">{{ t('auth.role', lang) }}</label>
+          <select id="role" name="role">
+            <option value="FARMER">{{ t('auth.role_farmer', lang) }}</option>
+            <option value="BUYER">{{ t('auth.role_buyer', lang) }}</option>
+            <option value="LOAN_OFFICER">{{ t('auth.role_loan_officer', lang) }}</option>
+            <option value="INSURANCE_OFFICER">{{ t('auth.role_insurance_officer', lang) }}</option>
+            <option value="COOPERATIVE_OFFICER">{{ t('auth.role_cooperative', lang) }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="preferred_language">{{ t('farmer.preferred_language', lang) }}</label>
+          <select id="preferred_language" name="preferred_language">
+            <option value="en" {% if lang == 'en' %}selected{% endif %}>{{ t('lang.english', lang) }}</option>
+            <option value="sw" {% if lang == 'sw' %}selected{% endif %}>{{ t('lang.swahili', lang) }}</option>
+          </select>
+        </div>
+      </div>
+      <fieldset id="farmer-fields" style="border:0;padding:0;margin:0">
+        <div class="form-grid">
+          <div class="field"><label for="village">{{ t('common.village', lang) }}</label><input id="village" name="village"></div>
+          <div class="field"><label for="district">{{ t('common.district', lang) }}</label><input id="district" name="district" placeholder="Morogoro"></div>
+          <div class="field"><label for="region">{{ t('common.region', lang) }}</label><input id="region" name="region"></div>
+        </div>
+      </fieldset>
+
+      {% if identity_required %}
+        <!-- Identity verification. Rendered server-side from the same catalog the
+             API uses, so the labels are already in the reader's language; auth.js
+             only drives the state (checking / verified / failed / OTP).
+
+             Which roles are gated is published to the page rather than baked in,
+             because the role picker changes after load: a farmer must verify a
+             national ID, a buyer or an officer must not. /auth/register enforces
+             exactly this list. -->
+        <section class="id-section" id="id-section" aria-labelledby="id-section-title"
+                 data-required-roles="{{ identity_roles | join(',') }}">
+          <div class="id-head">
+            <h2 id="id-section-title">{{ t('identity.title', lang) }}</h2>
+            <p class="small muted">{{ t('identity.subtitle', lang) }}</p>
+            <p class="small muted" id="id-scope-note">{{ t('identity.farmer_only', lang) }}</p>
+          </div>
+
+          <div class="id-steps" role="list">
+            <!-- step 1: the NIDA number -->
+            <div class="id-step" id="id-step-nida" data-step="nida">
+              <div class="id-step-head">
+                <span class="id-step-num" aria-hidden="true">1</span>
+                <span>{{ t('identity.field_nida', lang) }}</span>
+                <span class="id-status hidden" id="id-nida-status" role="status"></span>
+              </div>
+              <div class="field">
+                <label for="nida_number" class="hidden-a11y">{{ t('identity.field_nida', lang) }}</label>
+                <input id="nida_number" name="nida_number" inputmode="numeric" autocomplete="off"
+                       spellcheck="false" placeholder="{{ t('identity.nida_placeholder', lang) }}"
+                       aria-describedby="id-nida-hint id-nida-result">
+                <div class="hint" id="id-nida-hint">{{ t('identity.nida_hint', lang, lengths=nida_lengths) }}</div>
+              </div>
+              <button type="button" class="btn" id="id-verify-btn">{{ t('identity.verify_nida', lang) }}</button>
+              <div class="id-result hidden" id="id-nida-result" role="status" aria-live="polite"></div>
+            </div>
+
+            <!-- step 2: the phone code -->
+            <div class="id-step hidden" id="id-step-otp" data-step="otp">
+              <div class="id-step-head">
+                <span class="id-step-num" aria-hidden="true">2</span>
+                <span>{{ t('identity.otp_title', lang) }}</span>
+                <span class="id-status hidden" id="id-otp-status" role="status"></span>
+              </div>
+              <p class="small muted" id="id-otp-body"></p>
+              <div class="field">
+                <label for="otp_code" class="hidden-a11y">{{ t('identity.otp_confirm', lang) }}</label>
+                <input id="otp_code" name="otp_code" inputmode="numeric" autocomplete="one-time-code"
+                       spellcheck="false" maxlength="8" aria-describedby="id-otp-result">
+              </div>
+              <div class="row">
+                <button type="button" class="btn" id="id-otp-btn">{{ t('identity.otp_confirm', lang) }}</button>
+                <button type="button" class="btn secondary small" id="id-otp-resend">{{ t('identity.otp_resend', lang) }}</button>
+              </div>
+              <div class="id-result hidden" id="id-otp-result" role="status" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+      {% endif %}
+
+      {# Shown instead of the steps when the picked role is not gated. Kept outside
+         the section so it survives the section being hidden, and the server does
+         not need an identity for those roles either. #}
+      {% if identity_required %}
+        <p class="small muted hidden" id="id-skip-note">{{ t('identity.not_required_for_role', lang) }}</p>
+      {% endif %}
+
+      {# Mandatory when identity verification is on: rendered disabled so it is
+         visibly not optional before any script runs. auth.js enables it only
+         after the NIDA number and the phone code have both been accepted, and
+         /auth/register refuses the request regardless. #}
+      <button class="btn block" type="submit" id="register-submit"
+              {% if identity_required %}disabled{% endif %}>{{ t('auth.register', lang) }}</button>
+    </form>
+    <p class="small muted" style="margin-top:1rem">{{ t('auth.have_account', lang) }} <a href="/login">{{ t('auth.login', lang) }}</a></p>
+    </section>
+  </main>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/auth.js') }}"></script>{% endblock %}

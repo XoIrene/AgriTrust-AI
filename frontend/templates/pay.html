@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ t('payment.title', lang) }}{% endblock %}
+{% block nav %}{% endblock %}
+{% block body %}
+<main class="container">
+  <section class="card auth-card" id="pay" data-reference="{{ reference }}" data-sandbox="{{ '1' if sandbox else '0' }}">
+    <h1>{{ t('payment.title', lang) }}</h1>
+    <p class="muted" id="pay-state">{{ t('common.loading', lang) }}</p>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+(async function () {
+  const { t, fmt, el, loadCatalog } = window.AT;
+  await loadCatalog();
+  const box = document.getElementById("pay");
+  const reference = box.dataset.reference;
+  const sandbox = box.dataset.sandbox === "1";
+  let timer;
+
+  async function load() {
+    const res = await fetch(`/api/v1/payments/requests/${encodeURIComponent(reference)}`);
+    if (!res.ok) {
+      box.replaceChildren(el("h1", {}, t("payment.title")), el("div", { class: "alert error" }, t("error.not_found")));
+      return;
+    }
+    render(await res.json());
+  }
+
+  function render(p) {
+    const rows = [
+      [t("payment.pay_to"), "AgriTrust AI"],
+      [t("common.provider"), p.provider_name],
+      p.lipa_number ? [p.channel === "BANK_TRANSFER" ? t("payment.account") : t("payment.lipa_number"), p.lipa_number] : null,
+      [t("common.reference"), p.reference],
+      [t("payment.purpose"), t(`payment.purpose_${p.purpose.toLowerCase()}`)],
+    ].filter(Boolean);
+    const statusBox = el("div", { class: "row", style: "margin:0.75rem 0" },
+      AT.pill(p.status === "PAID" ? "PAID" : p.status === "PENDING" ? "PENDING" : "CANCELLED", t(`payment.status_${p.status.toLowerCase()}`)),
+      null);
+    const children = [
+      el("h1", {}, t("payment.title")),
+      el("div", { class: "hero-figure", style: "margin:0.5rem 0" }, fmt.money(p.amount)),
+      statusBox,
+      el("table", {}, el("tbody", {}, rows.map(([k, v]) => el("tr", {}, el("th", {}, k), el("td", { class: "num" }, v))))),
+    ];
+    if (p.status === "PENDING") {
+      children.push(el("h3", { style: "margin-top:1rem" }, t("payment.how_to_pay")), steps(p));
+      if (sandbox && p.is_sandbox) {
+        const btn = el("button", { class: "btn block", style: "margin-top:0.75rem" }, t("payment.simulate"));
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          const res = await fetch(`/api/v1/payments/requests/${encodeURIComponent(reference)}/confirm`, { method: "POST" });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) render(data); else { btn.disabled = false; AT.toast(AT.errorText(data.detail)); }
+        });
+        children.push(btn);
+      }
+      clearTimeout(timer);
+      timer = setTimeout(load, 4000);
+    } else if (p.status === "PAID") {
+      children.push(el("div", { class: "alert success", style: "margin-top:1rem" },
+        t("payment.received_body", { amount: fmt.number(p.amount), reference: p.reference })));
+    }
+    box.replaceChildren(...children);
+  }
+
+  function steps(p) {
+    const list = p.channel === "LIPA_NAMBA"
+      ? [t("payment.step_dial", { code: p.ussd_code || p.provider_name }), t("payment.step_lipa", { number: p.lipa_number }),
+        t("payment.step_amount", { amount: fmt.number(p.amount) }), t("payment.step_reference", { reference: p.reference }), t("payment.step_pin")]
+      : p.channel === "BANK_TRANSFER"
+        ? [t("payment.step_bank", { account: p.lipa_number }), t("payment.step_amount", { amount: fmt.number(p.amount) }), t("payment.step_reference", { reference: p.reference })]
+        : [t("payment.step_checkout", { provider: p.provider_name }), t("payment.step_reference", { reference: p.reference })];
+    return el("ol", { class: "small" }, list.map((s) => el("li", {}, s)));
+  }
+
+  load();
+})();
+</script>
+{% endblock %}

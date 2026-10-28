@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.dashboard', lang) }}{% endblock %}
+{% block nav %}{% endblock %}
+{% block body %}
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="{{ t('nav.dashboard', lang) }}">
+    <div class="who"><span class="muted small">{{ t('common.loading', lang) }}</span></div>
+  </aside>
+  <main class="main" id="main" tabindex="-1">
+    <div class="view" id="view"><p class="muted">{{ t('common.loading', lang) }}</p></div>
+  </main>
+</div>
+<dialog id="dialog"></dialog>
+{% endblock %}
+{% block scripts %}
+<script src="{{ asset('js/charts.js') }}"></script>
+<script src="{{ asset('js/dashboard.js') }}"></script>
+{% endblock %}
